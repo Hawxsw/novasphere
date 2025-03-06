@@ -2,24 +2,25 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-COPY prisma ./prisma/
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
-RUN npm install
+COPY package*.json pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-RUN npm run build
+RUN pnpm run build
 
 FROM node:18-alpine
 
 WORKDIR /app
 
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:prod"] 
+CMD ["pnpm", "run", "start:prod"]

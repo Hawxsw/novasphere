@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String      @id @default(uuid())
+  email        String      @unique
+  password     String
+  firstName    String
+  lastName     String
+  avatar       String?
+  role         Role        @default(USER)
+  position     Position?   @relation(fields: [positionId], references: [id])
+  positionId   String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId String?
+  isActive     Boolean     @default(true)
+  lastSeen     DateTime    @default(now())
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  // Relações
+  sentMessages     Message[]         @relation("SentMessages")
+  receivedMessages Message[]         @relation("ReceivedMessages")
+  groupMemberships GroupMember[]
+  chatbotFlows     ChatbotFlow[]
+  whatsappSessions WhatsAppSession[]
+
+  @@map("users")
+}
+
+model Position {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  level       Int
+  users       User[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("positions")
+}
+
+model Department {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  users       User[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("departments")
+}
+
+model Message {
+  id         String      @id @default(uuid())
+  content    String
+  type       MessageType @default(TEXT)
+  senderId   String
+  sender     User        @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId String?
+  receiver   User?       @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  groupId    String?
+  group      Group?      @relation(fields: [groupId], references: [id])
+  read       Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@map("messages")
+}
+
+model Group {
+  id          String        @id @default(uuid())
+  name        String
+  description String?
+  avatar      String?
+  members     GroupMember[]
+  messages    Message[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("groups")
+}
+
+model GroupMember {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  groupId   String
+  group     Group    @relation(fields: [groupId], references: [id])
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, groupId])
+  @@map("group_members")
+}
+
+model ChatbotFlow {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  flow        Json
+  createdBy   String
+  creator     User     @relation(fields: [createdBy], references: [id])
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("chatbot_flows")
+}
+
+model WhatsAppSession {
+  id          String        @id @default(uuid())
+  phoneNumber String        @unique
+  status      SessionStatus @default(DISCONNECTED)
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("whatsapp_sessions")
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  SUPERVISOR
+  USER
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  VOICE
+}
+
+enum SessionStatus {
+  CONNECTED
+  DISCONNECTED
+  PENDING
+}
