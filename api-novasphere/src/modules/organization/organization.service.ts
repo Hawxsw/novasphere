@@ -5,7 +5,7 @@ import { CreateDepartmentDto } from './dto/create-department.dto';
 
 @Injectable()
 export class OrganizationService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async createPosition(data: CreatePositionDto) {
     return this.prisma.position.create({

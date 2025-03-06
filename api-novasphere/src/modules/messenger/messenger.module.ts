@@ -10,4 +10,4 @@ import { PrismaModule } from '../prisma/prisma.module';
   controllers: [MessengerController],
   exports: [MessengerService],
 })
-export class MessengerModule {} 
+export class MessengerModule { } 
