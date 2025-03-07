@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useClients } from '@/hooks/useClients'
 import { Client } from '@/types/client'
 import { Input } from '../ui/input'
-
+import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from '../ui/select'
 export const ClientList = () => {
     const [filters, setFilters] = useState({
         search: '',
@@ -25,14 +25,18 @@ export const ClientList = () => {
                     value={filters.search}
                     onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                 />
-                <select
-                    className="input-field bg-[#1C1C1C] text-white"
+                <Select
                     value={filters.status}
-                    onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+                    onValueChange={(value) => setFilters(prev => ({ ...prev, status: value }))}
                 >
-                    <option value="active">Ativos</option>
-                    <option value="inactive">Inativos</option>
-                </select>
+                    <SelectTrigger className="input-field bg-[#1C1C1C] text-white placeholder:text-white border-white">
+                        <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="active">Ativos</SelectItem>
+                        <SelectItem value="inactive">Inativos</SelectItem>
+                    </SelectContent>
+                </Select>
             </div>
 
             <div className="grid gap-4">

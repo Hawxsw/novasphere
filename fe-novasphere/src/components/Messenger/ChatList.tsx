@@ -1,5 +1,7 @@
 import { ChatRoom } from '@/types/message'
 import { format } from 'date-fns'
+import { Input } from '../ui/input'
+import { Button } from '../ui/button'
 
 interface ChatListProps {
     chatRooms: ChatRoom[]
@@ -11,7 +13,7 @@ export const ChatList = ({ chatRooms, selectedChatId, onSelectChat }: ChatListPr
     return (
         <div className="h-full flex flex-col">
             <div className="p-4 border-b border-gray-200">
-                <input
+                <Input
                     type="text"
                     placeholder="Buscar conversas..."
                     className="input-field bg-[#1C1C1C] text-white placeholder:text-white border-white"
@@ -19,7 +21,7 @@ export const ChatList = ({ chatRooms, selectedChatId, onSelectChat }: ChatListPr
             </div>
             <div className="flex-1 overflow-y-auto">
                 {chatRooms.map((chat) => (
-                    <button
+                    <Button
                         key={chat.id}
                         onClick={() => onSelectChat(chat.id)}
                         className={`w-full p-4 flex items-start space-x-3 hover:bg-gray-50 ${selectedChatId === chat.id ? 'bg-primary-50' : ''
@@ -50,7 +52,7 @@ export const ChatList = ({ chatRooms, selectedChatId, onSelectChat }: ChatListPr
                                 </span>
                             )}
                         </div>
-                    </button>
+                    </Button>
                 ))}
             </div>
         </div>

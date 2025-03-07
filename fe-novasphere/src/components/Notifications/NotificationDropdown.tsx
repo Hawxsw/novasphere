@@ -1,13 +1,13 @@
 import { useNotifications } from '@/hooks/useNotifications'
 import { format } from 'date-fns'
 import { BellIcon } from '@heroicons/react/24/outline'
-
+import { Button } from '../ui/button'
 export const NotificationDropdown = () => {
     const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications()
 
     return (
         <div className="relative">
-            <button
+            <Button
                 type="button"
                 className="relative p-2 text-gray-400 hover:text-gray-500"
             >
@@ -15,19 +15,19 @@ export const NotificationDropdown = () => {
                 {unreadCount > 0 && (
                     <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500" />
                 )}
-            </button>
+            </Button>
 
             <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200">
                 <div className="p-4 border-b border-gray-200">
                     <div className="flex items-center justify-between">
                         <h3 className="text-lg font-medium text-gray-900">Notificações</h3>
                         {unreadCount > 0 && (
-                            <button
+                            <Button
                                 onClick={() => markAllAsRead()}
                                 className="text-sm text-primary-600 hover:text-primary-700"
                             >
                                 Marcar todas como lidas
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </div>

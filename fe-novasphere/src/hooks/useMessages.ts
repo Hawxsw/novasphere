@@ -2,33 +2,34 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Message, ChatRoom } from '@/types/message'
 import apiClient from '@/api/apiClient'
 
-export const useMessages = (chatRoomId?: string) => {
+export const useMessages = (userId?: string) => {
   const queryClient = useQueryClient()
 
   const { data: chatRooms } = useQuery<ChatRoom[]>({
-    queryKey: ['chat-rooms'],
+    queryKey: ['chat-rooms', userId],
     queryFn: async () => {
-      const { data } = await apiClient.get('/chat-rooms')
+      const { data } = await apiClient.get(`/messenger/groups/${userId}`)
       return data
-    }
+    },
+    enabled: !!userId
   })
 
   const { data: messages, isLoading } = useQuery<Message[]>({
-    queryKey: ['messages', chatRoomId],
+    queryKey: ['messages', userId],
     queryFn: async () => {
-      const { data } = await apiClient.get(`/chat-rooms/${chatRoomId}/messages`)
+      const { data } = await apiClient.get(`/messenger/messages/${userId}`)
       return data
     },
-    enabled: !!chatRoomId
+    enabled: !!userId
   })
 
   const sendMessage = useMutation<Message, Error, { content: string; receiverId: string }>({
     mutationFn: async (message) => {
-      const { data } = await apiClient.post('/messages', message)
+      const { data } = await apiClient.post('/messenger/message', message)
       return data
     },
     onSuccess: (newMessage) => {
-      queryClient.setQueryData<Message[]>(['messages', chatRoomId], (old = []) => [...old, newMessage])
+      queryClient.setQueryData<Message[]>(['messages', userId], (old = []) => [...old, newMessage])
     }
   })
 

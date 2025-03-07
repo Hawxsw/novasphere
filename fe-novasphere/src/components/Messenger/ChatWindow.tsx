@@ -4,7 +4,8 @@ import { Message } from '@/types/message'
 import { useAuth } from '@/hooks/useAuth'
 import { format } from 'date-fns'
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline'
-
+import { Input } from '../ui/input'
+import { Button } from '../ui/button'
 interface ChatWindowProps {
     chatRoomId: string
 }
@@ -72,20 +73,20 @@ export const ChatWindow = ({ chatRoomId }: ChatWindowProps) => {
 
             <form onSubmit={handleSendMessage} className="border-t border-gray-200 p-4">
                 <div className="flex items-center gap-2">
-                    <input
+                    <Input
                         type="text"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Digite sua mensagem..."
-                        className="input-field"
+                        className="input-field bg-[#1C1C1C] text-white placeholder:text-white border-white"
                     />
-                    <button
+                    <Button
                         type="submit"
                         disabled={sendMessage.isPending}
-                        className="btn-primary p-2"
+                        className="btn-primary p-2 bg-[#1C1C1C] text-white placeholder:text-white border-white"
                     >
                         <PaperAirplaneIcon className="h-5 w-5" />
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>
