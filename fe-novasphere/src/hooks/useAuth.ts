@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { User, LoginCredentials, AuthResponse } from '@/types/auth'
 import apiClient from '@/api/apiClient'
+import { useState } from 'react'
 
 interface AuthState {
   loading: boolean;
@@ -9,6 +10,10 @@ interface AuthState {
 
 export const useAuth = () => {
   const queryClient = useQueryClient()
+  const [_, setState] = useState<AuthState>({
+    loading: true,
+    data: null
+  })
 
   const { data: user, isLoading } = useQuery<User>({
     queryKey: ['user'],
